@@ -1,6 +1,6 @@
 rm(list=ls(all=TRUE))
 source('simulations/gent/functions.R')
-library(RColorBrewer);library(mvnfast);library(ggplot2)
+library(RColorBrewer);library(mvnfast);library(ggplot2);library(dplyr)
 #########################################################################################
 # Type I error
 ## changing LD density and changing number of SNPs tested
@@ -130,3 +130,57 @@ ggplot(pdf,aes(x=factor(nref),y=x,color=factor(M))) +
   scale_y_continuous(breaks=c(0,0.05,0.1,0.25),
                      labels=c('0.00','0.05','0.10','0.25'),
                      limits=c(0,0.25))
+########################################################################################
+## comparing power of GenT to lead SNP-based gene inference
+rm(list=ls(all=TRUE))
+# parameters
+niter=10000
+ngwas=10000 # change this manually for 10k and 50k
+M=50
+mcausals=1:10
+h2s=c(0.00005,0.00025,0.0005)
+# h2s=c(0.0005)
+LD=ar1(M,0.75) # AR1
+# LD=cs(M,0.9) # compound symmetry
+d=eigen(LD)$values
+meff=sum(d>1+d*(d<=1)) # effective number of independent SNPs. Best approximated for AR1(0.75)
+Th=solve(LD)
+RES1=RES2=matrix(nr=max(mcausals),nc=length(h2s))
+for(i in 1:max(mcausals)) {
+  for(j in 1:length(h2s)) {
+    # true joint effect sizes
+    b=rep(0,M)
+    ix=sample(1:M,mcausals[i]) # put nonzero causal effects in random locations
+    b[ix]=sqrt(h2s[j]/mcausals[i])
+    bhat=rmvn(niter,b,Th/ngwas) # estimated joint effect sizes
+    betahat=t(LD%*%t(bhat))
+    s2=rchisq(M*niter,ngwas-1)/(ngwas-1)/ngwas
+    s2=matrix(s2,nr=niter,nc=M)
+    z=betahat/sqrt(s2)
+    ps=apply(z,1,function(h) gent(h,LD)$pval)
+    RES1[i,j]=sum(ps<0.05) # GenT
+    RES2[i,j]=sum(apply(z^2,1,function(h) any(h>qchisq(1-0.05/(2*meff),1)))) # lead SNP-based gene inference
+    cat(i,':',j,'\n',sep='')
+  }
+}
+RES1=RES1/niter
+RES2=RES2/niter
+pdf1=data.frame(x=c(RES1),mcausal=rep(mcausals,length(h2s)),h2=rep(h2s,each=max(mcausals)))
+pdf2=data.frame(x=c(RES2),mcausal=rep(mcausals,length(h2s)),h2=rep(h2s,each=max(mcausals)))
+pdf=bind_rows(pdf1 %>% mutate(type='GenT'),pdf2 %>% mutate(type='Lead SNP'))
+# plot
+library(ggplot2)
+pdf %>%
+  tidyr::pivot_wider(values_from='x',names_from='type') %>%
+  ggplot(aes(x=factor(mcausal),y=0,yend=GenT/`Lead SNP`,color=factor(h2))) +
+  geom_segment(position=position_dodge(1)) +
+  geom_point(aes(x=factor(mcausal),y=GenT/`Lead SNP`,color=factor(h2)),
+             position=position_dodge(1)) +
+  geom_hline(yintercept=1,lty=2) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.border=element_rect(colour="black",fill=NA,linewidth=1)) +
+  scale_color_brewer(palette='Dark2') +
+  labs(x='# gene SNPs explaining h2',y='GenT Power / Lead SNP Power') +
+  guides(color='none')
