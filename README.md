@@ -7,3 +7,7 @@ This repository contains the following data:
   - Gene-SNP pair results from finemapping using SuSiE applied to each gene and multiple phenotypes
 - [simulations](https://github.com/noahlorinczcomi/gent_analysis/tree/main/simulations)
   - R code used to perform simulations used to evaluate GenT, xGenT, MuGenT, MuGenT-PH, MuGenT-Pleio, and MuGenT-Sel.
+- [druggable_genes.txt](https://raw.githubusercontent.com/noahlorinczcomi/gent_analysis/main/druggable_genes.txt)
+  - List of 3,370 druggable genes
+- [druggable_genes_high_affinity.txt](https://raw.githubusercontent.com/noahlorinczcomi/gent_analysis/main/druggable_genes_high_affinity.txt)
+  - List of 1,230 druggable genes with high binding affinity
