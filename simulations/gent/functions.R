@@ -37,3 +37,20 @@ linehist=function(x,lwd=1,linecol='black',...) {
   lines(x=rep(h$breaks[1],2),y=c(0,h$density[1]),lwd=lwd,col=linecol)
   lines(x=rep(tail(h$breaks,1),2),y=c(0,tail(h$density,1)),lwd=lwd,col=linecol)
 }
+# transformd statistic F
+
+f=function(z,R) {
+  n=length(z)
+  d=eigen(R)
+  U=d$vectors
+  D=diag(d$values)
+  ei=d$values
+  vi=2*ei^2
+  c0i=ei/vi
+  y=t(U)%*%z
+  fi=c0i*y^2
+  fis=sum(fi)
+  pval=pgamma(fis,shape=n/2,rate=1,lower.tail=FALSE)
+  list(pval=pval,stat=fis)
+}
+
