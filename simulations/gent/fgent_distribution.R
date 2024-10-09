@@ -1,5 +1,5 @@
 rm(list=ls(all=TRUE))
-library(mvnfast);library(ggplot2);library(ggh4x)
+library(mvnfast)
 source('simulations/gent/functions.R')
 ##################################################################################
 # changing ms, ngwas, LD density
