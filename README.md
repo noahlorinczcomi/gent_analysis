@@ -8,8 +8,8 @@ This repository contains the following data:
 - [simulations](https://github.com/noahlorinczcomi/gent_analysis/tree/main/simulations)
   - R code used to perform simulations used to evaluate GenT, xGenT, MuGenT, MuGenT-PH, MuGenT-Pleio, and MuGenT-Sel.
 - [druggable_genes.txt](https://raw.githubusercontent.com/noahlorinczcomi/gent_analysis/main/druggable_genes.txt)
-  - List of 3,370 druggable genes
+  - List of 3,370 genes with drug target interactions ('druggable genes')
 - [druggable_genes_high_affinity.txt](https://raw.githubusercontent.com/noahlorinczcomi/gent_analysis/main/druggable_genes_high_affinity.txt)
-  - List of 1,230 druggable genes with high binding affinity
+  - List of 1,230 genes with drug target interactions with high binding affinity
 
 We made a Shiny web application where you can view and download gene-based association testing (GenT) and fine-mapping results for 32 traits here: [https://nlorinczcomi.shinyapps.io/gent](https://nlorinczcomi.shinyapps.io/gent).
