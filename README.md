@@ -1,6 +1,6 @@
 This repository contains the following data:
 - [data_analysis_scripts](https://github.com/noahlorinczcomi/gent_analysis/tree/main/data_analysis_scripts)
-  - R scripts used to analyze data in [forthcoming](https://github.com/noahlorinczcomi/gent_analysis)
+  - R scripts used to analyze data in [preprint]([https://github.com/noahlorinczcomi/gent_analysis](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5080346))
 - [gene_test_results](https://github.com/noahlorinczcomi/gent_analysis/tree/main/gene_test_results)
   - Gene-level results from gene-based association tested with GenT applied to multiple phenotypes
 - [finemaps](https://github.com/noahlorinczcomi/gent_analysis/tree/main/finemaps)
