@@ -2,33 +2,6 @@
 library(data.table);library(magrittr);library(tidyr);library(dplyr);library(ggplot2)
 library(mvnfast,lib='/home/lorincn/Rpkgs')
 library(mvsusieR,lib='/home/lorincn/Rpkgs')
-# library(snpsettest,lib='/home/lorincn/Rpkgs')
-# source('/home/lorincn/Rpkgs/manual_snpsettestcode.R')
-library(ACAT,lib='/home/lorincn/Rpkgs')
-library(gent,lib='/home/lorincn/Rpkgs')
-library(exset,lib='/home/lorincn/Rpkgs')
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-# gene-based association tests ####
-# snpsettest (saddlepoint/numerical approximation to the null distribution of the VEGAS statistic)
-#  - Method: https://github.com/HimesGroup/snpsettest/wiki/Statistical-test-in-snpsettest
-#  - Code: https://github.com/HimesGroup/snpsettest
-#  - Example usage: snpsettest(z^2,ld_eigenvalues)
-# ACAT (SKAT with summary statistics using Cauchy combination test)
-#  - Method: https://www.sciencedirect.com/science/article/pii/S0002929719300023?via%3Dihub 
-#  - Code: https://github.com/yaowuliu/ACAT
-#  - Example usage: ACAT(pvals)
-# GATES
-#  - Method: https://pmc.ncbi.nlm.nih.gov/articles/PMC3059433/
-#  - Code: GATES() (see below)
-#  - Example usage: GATES(pvals)
-# GenT
-#  - Method: https://dx.doi.org/10.2139/ssrn.5080346 
-#  - Code: https://github.com/noahlorinczcomi/gent
-#  - Example usage: gent(zs,ld)
-# exset (exact set-based testing)
-#  - Method: https://github.com/noahlorinczcomi/exset 
-#  - Code: https://github.com/noahlorinczcomi/exset 
-#  - Example usage: exset(sum(zs^2),ld_eigenvalues)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # functions ####
 theme_set(
@@ -57,75 +30,6 @@ posDefifyCorrMat=function(ndmatrix,epsilon=1e-4) {
     Sigmahat=ndmatrix
   }
   return(list(Sigmahat=Sigmahat,alpha=alpha,deco=deco))
-}
-##' @noRd
-pchisqsum <- function (x, df, a, lower.tail = TRUE) {
-  sat <- satterthwaite(a, df)
-  guess <- pchisq(x / sat$scale, sat$df, lower.tail = lower.tail)
-  for (i in seq(length = length(x))) {
-    lambda <- rep(a, df)
-    sad <- sapply(x, saddle, lambda = lambda)
-    if (lower.tail) sad <- 1 - sad
-    guess <- ifelse(is.na(sad), guess, sad)
-  }
-  return(guess)
-}
-
-satterthwaite <- function(a, df) {
-  if (any(df > 1)) {
-    a <- rep(a, df)
-  }
-  tr <- mean(a)
-  tr2 <- mean(a^2) / (tr^2)
-  list(scale = tr * tr2, df = length(a) / tr2)
-}
-
-saddle <- function(x, lambda) {
-    d <- max(lambda)
-    lambda <- lambda / d
-    x <- x / d
-    k0 <- function(zeta) {
-      -sum(log(1 - 2 * zeta * lambda)) / 2
-    }
-    kprime0 <- function(zeta) {
-      sapply(zeta, function(zz) sum(lambda / (1 - 2 * zz * lambda)))
-    }
-    kpprime0 <- function(zeta) {
-      2 * sum(lambda^2 / (1 - 2 * zeta * lambda)^2)
-    }
-    if (any(lambda < 0)) {
-        lmin <- max(1 / (2 * lambda[lambda < 0])) * 0.99999
-    } else if (x > sum(lambda)) {
-        lmin <- -0.01
-    } else {
-        lmin <- -length(lambda) / (2 * x)
-    }
-    lmax <- min(1 / (2 * lambda[lambda > 0])) * 0.99999
-    hatzeta <- uniroot(function(zeta) kprime0(zeta) - x, lower = lmin,
-                       upper = lmax, tol = 1e-08)$root
-    w <- sign(hatzeta) * sqrt(2 * (hatzeta * x - k0(hatzeta)))
-    v <- hatzeta * sqrt(kpprime0(hatzeta))
-    if (abs(hatzeta) < 1e-04) {
-      NA
-    }  else {
-      pnorm(w + log(v / w) / w, lower.tail = FALSE)
-    }
-}
-snpsettest=function(chisquares,ld_eigenvalues) pchisqsum(sum(chisquares),df=1,ld_eigenvalues)
-meff=function(lambda,M=length(lambda)) sum(+(lambda>=1)+lambda*(lambda<1))
-GATES=function(pvalues,ld) {
-  M=length(pvalues)
-  ix=order(pvalues)
-  p=pvalues[ix]
-  R=ld[ix,ix]
-  mej=c()
-  for(j in 1:M) {
-    Rj=R[1:j,1:j]
-    mej[j]=meff(eigen(Rj)$values)
-  }
-  me=tail(mej,1)
-  Pg=min(me*p/mej)
-  Pg
 }
 simdata=function(m,rho,z0=rep(0,m),nref=505,niter=1000) {
   R0=ar1(m,rho)
@@ -182,9 +86,6 @@ for(i in 1:length(blocks)) {
     if(length(causalix)>0) taus[causalix]=h2/mcausalsnps
     m=370 # same m for all genes (mean of number tested SNPs in AD analysis)
     LD=ar1(m,0.75) # LD between SNPs for all genes
-    # cortype='AR1' # 'AR!' or 'CS' type of correlation structure
-    # rho=0.9 # correlation between genes
-    # if(cortype=='CS') R=CS(ngenes,rho) else R=ar1(ngenes,rho) # correlation between gene-based test statistics
     R=gent.Rho[blocks[[i]],blocks[[i]]]
     null_mean=m
     null_variance=2*tr(LD%*%LD)
