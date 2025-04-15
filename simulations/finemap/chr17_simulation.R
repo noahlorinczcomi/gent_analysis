@@ -2,6 +2,11 @@
 library(data.table);library(magrittr);library(tidyr);library(dplyr);library(ggplot2)
 library(mvnfast,lib='/home/lorincn/Rpkgs')
 library(mvsusieR,lib='/home/lorincn/Rpkgs')
+# library(snpsettest,lib='/home/lorincn/Rpkgs')
+# source('/home/lorincn/Rpkgs/manual_snpsettestcode.R')
+library(ACAT,lib='/home/lorincn/Rpkgs')
+library(gent,lib='/home/lorincn/Rpkgs')
+library(exset,lib='/home/lorincn/Rpkgs')
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # functions ####
 theme_set(
@@ -59,8 +64,8 @@ atransform=function(Q,null_mean,null_variance) {
 # simulation for fine-mapping with GenT ####
 ## need to simulate multiple gene-based association test statistics
 ## use an actual matrix of gene correlations around AD lead genes
-gent.Rho=readRDS('/mnt/isilon/w_gmi/chengflab/Cheng-Noah/reference_data/gent_stat_ld/full_matrices/full_matricesEUR.Rds')
-blocks=readRDS('/mnt/isilon/w_gmi/chengflab/Cheng-Noah/manuscripts/aging_and_brain_ROIs/plot_data/GenT_EUR_correlation_blocks.Rds')
+gent.Rho=readRDS('GenT_EUR_correlation_matrices.Rds')
+blocks=readRDS('GenT_EUR_correlation_blocks.Rds')
 ## use chromosome 17
 chr=17
 gent.Rho=gent.Rho[[paste0('chr',chr)]]
@@ -86,6 +91,9 @@ for(i in 1:length(blocks)) {
     if(length(causalix)>0) taus[causalix]=h2/mcausalsnps
     m=370 # same m for all genes (mean of number tested SNPs in AD analysis)
     LD=ar1(m,0.75) # LD between SNPs for all genes
+    # cortype='AR1' # 'AR!' or 'CS' type of correlation structure
+    # rho=0.9 # correlation between genes
+    # if(cortype=='CS') R=CS(ngenes,rho) else R=ar1(ngenes,rho) # correlation between gene-based test statistics
     R=gent.Rho[blocks[[i]],blocks[[i]]]
     null_mean=m
     null_variance=2*tr(LD%*%LD)
