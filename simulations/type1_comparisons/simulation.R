@@ -39,7 +39,6 @@ theme_set(
           panel.background=element_rect(fill='#EBF9FF',colour='black'))
 )
 tr=function(x) sum(diag(x))
-ar1=function(n,rho) rho^toeplitz(0:(n-1))
 CS=function(n,rho) matrix(rho,n,n)+(1-rho)*diag(n)
 posDefifyCorrMat=function(ndmatrix,epsilon=1e-4) {
   # ndmatrix: pxp square negative-definite matrix of measurement error correlations/covariances
@@ -162,7 +161,7 @@ for(i in 1:length(ms)) {
   for(j in 1:length(rhos)) {
     rho=rhos[j]
     cat(' rho=',rho,'\n',sep='')
-    LD0=ar1(m,rho)
+    LD0=CS(m,rho)
     LD=rWishart(niter,505,LD0) # 505 is the size of the European 1000 Genomes Phase 3 cohort
     for(o in 1:niter) LD[,,o]=cov2cor(LD[,,o])
     Z=mvnfast::rmvn(niter,rep(0,m),LD0)
