@@ -6,7 +6,7 @@ This repository contains the following data:
 - [finemaps](https://github.com/noahlorinczcomi/gent_analysis/tree/main/finemaps)
   - Gene-SNP pair results from finemapping using SuSiE applied to each gene and multiple phenotypes
 - [simulations](https://github.com/noahlorinczcomi/gent_analysis/tree/main/simulations)
-  - R code used to perform simulations used to evaluate GenT, MuGenT, MuGenT-PH, MuGenT-Pleio, MuGenT-Sel, xGenT, finemapping of gene-based test statistics, and comparisons of Type I error between GenT, [ACAT](https://github.com/yaowuliu/ACAT), [VEGAS](https://github.com/HimesGroup/snpsettest), [GATES](https://pmc.ncbi.nlm.nih.gov/articles/PMC3059433/), and [exset](https://github.com/noahlorinczcomi/exset).
+  - R code used to perform simulations used to evaluate GenT, MuGenT, MuGenT-PH, MuGenT-Pleio, MuGenT-Sel, xGenT, finemapping of gene-based test statistics, and comparisons of Type I/II error between GenT, [ACAT](https://github.com/yaowuliu/ACAT), [VEGAS](https://github.com/HimesGroup/snpsettest), [GATES](https://pmc.ncbi.nlm.nih.gov/articles/PMC3059433/), and [exset](https://github.com/noahlorinczcomi/exset).
 - [druggable_genes.txt](https://raw.githubusercontent.com/noahlorinczcomi/gent_analysis/main/druggable_genes.txt)
   - List of 3,370 genes with drug target interactions ('druggable genes')
 - [druggable_genes_high_affinity.txt](https://raw.githubusercontent.com/noahlorinczcomi/gent_analysis/main/druggable_genes_high_affinity.txt)
