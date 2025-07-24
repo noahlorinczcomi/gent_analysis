@@ -1,14 +1,6 @@
 rm(list=ls(all=TRUE))
 library(data.table);library(dplyr);library(ggplot2);library(magrittr);library(tidyr)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-# WILL NEED TO RE-DO AFTER NEW GENT RESULTS ARE FINISHED. ISILON WAS INTERRUPTED
-# WHEN I WAS RUNNING IT AND IT ONLY DID 7K OF THE 18K GENES.
-# NEW RESULTS SAVED TO:
-#  ~/isilon/Cheng-Noah/Gent_results/NEWNEW_GenT_TypeI.Rds
-#  or
-#  ~/isilon/Cheng-Noah/Gent_results/AD_2025-07-23.Rds
-# slurm job: 2980750
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 setwd('/mnt/isilon/w_gmi/chengflab/Cheng-Noah/manuscripts/druggable_genes/MAGMA_simulations')
 magma_df=fread('output/type1_error/magma.genes.out') %>%
   mutate(chr=as.numeric(CHR)) %>%
