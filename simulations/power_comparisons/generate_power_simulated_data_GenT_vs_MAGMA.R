@@ -111,7 +111,7 @@ for(cc in 1:22) {
         Ni=find_n(h2,M,Ri,target=target,alpha=alpha)
         b=rep(0,mi) # true effect sizes / sqrt(n)
         b[floor(mi/2)]=sqrt(Ni*h2/M)
-        zi=rmvn(1,b,Ri) %>% c()
+        zi=rmvn(1,Ri%*%b,Ri) %>% c()
         # save (generic format)
         toadd=data.frame(rsid=snps_around,z=zi,p=pchisq(zi^2,1,lower.tail=FALSE)) %>%
           left_join(bim_chr %>% filter(rsid %in% snps_around) %>% select(rsid,chr,position,a1),by='rsid')
